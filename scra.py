@@ -1,18 +1,25 @@
 from turtle import title
-import requests, time
+import requests, time, bs4
 from bs4 import BeautifulSoup #pip install bs4
 
-target = [
-			'https://www.wawacity.blue/?p=manga&id=941-lord-el-melloi-ii-s-case-files-rail-zeppelin-grace-note-saison1',
-			'https://www.wawacity.blue/?p=manga&id=902-twin-star-exorcists-saison1',
-			'https://www.wawacity.blue/?p=manga&id=520-baki-2018-saison1',
-			'https://www.wawacity.blue/?p=manga&id=1914-baki-2018-saison2',
-			'https://www.wawacity.blue/?p=manga&id=2419-baki-2018-saison3',
-			'https://www.wawacity.blue/?p=manga&id=1046-last-exile-saison1'
-		]
 
-def getLink(targetList, sleepingTime=1):
-	_links = []
+def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...}
+	target = 'https://www.wawacity.blue/?search='+searchName+'&p='+mediaType
+	_searchDict = {}
+	r = requests.get(target)
+	if r.ok: 
+		soup = BeautifulSoup(r.text, "html.parser")
+		for links in soup.find_all('div', {'class': 'wa-sub-block-title'}):
+			for a in links.a:
+				if type(a) == bs4.element.NavigableString and a != ' ':
+					name = a
+			for a in links.find_all('a'):
+				nameLink = 'https://www.wawacity.blue/' + a.get('href')
+			_searchDict[name] = nameLink
+		return _searchDict
+
+
+def getLink(targetList, sleepingTime=1): #return list(links,links,...)
 	_cleanLinks = []
 	for url in targetList:
 	    r = requests.get(url)
@@ -25,4 +32,4 @@ def getLink(targetList, sleepingTime=1):
 	time.sleep(sleepingTime)
 	return _cleanLinks
 
-print(getLink(target))
+print(search('https://www.wawacity.blue/?search=one&p=mangas'))
