@@ -11,16 +11,18 @@ target = [
 			'https://www.wawacity.blue/?p=manga&id=1046-last-exile-saison1'
 		]
 
-links = []
+def getLink(targetList, sleepingTime=1):
+	_links = []
+	_cleanLinks = []
+	for url in targetList:
+	    r = requests.get(url)
+	    if r.ok: 
+	        soup = BeautifulSoup(r.text, "html.parser")
+	        for _links in soup.find_all('a',{'class': 'link'}):
+	            if 'Télécharger' in str(_links) and 'Lien 1:' in str(_links):
+	                _cleanLinks.append(_links.get('href'))
+	        print(str(soup.title) + ' -----> Finish')
+	time.sleep(sleepingTime)
+	return _cleanLinks
 
-for url in target:
-    r = requests.get(url)
-    if r.ok: 
-        soup = BeautifulSoup(r.text, "html.parser")
-        print(soup.title)
-        for links in soup.find_all('a',{'class': 'link'}):
-            if 'Télécharger' in str(links) and 'Lien 1:' in str(links):
-                print(links.get('href'))
-
-    time.sleep(1)
-    print('\n')
+print(getLink(target))
