@@ -56,10 +56,10 @@ def getLink(target, sleepingTime=1): #return list(links,links,...)
 	if r.ok: 
 		soup = BeautifulSoup(r.text, "html.parser")
 		for _links in soup.find_all('a',{'class': 'link'}):
-			_cleanLinks.append(_links.get('href'))
+			if 'Télécharger' in str(_links) and 'Lien 1:' in str(_links):
+				_cleanLinks.append(_links.get('href'))
 	time.sleep(sleepingTime)
 	return _cleanLinks
-
 
 for x in getLink(choose(search(formatWish(input('What you wish: '))))):
 	print(x)
