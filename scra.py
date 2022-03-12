@@ -2,7 +2,6 @@ from turtle import title
 import requests, time, bs4
 from bs4 import BeautifulSoup #pip install bs4
 
-
 def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...}
 	target = 'https://www.wawacity.blue/?search='+searchName+'&p='+mediaType
 	_searchDict = {}
@@ -18,18 +17,26 @@ def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...
 			_searchDict[name] = nameLink
 		return _searchDict
 
+def choose(searchDict): #return str(links)
+	_nameList = []
+	for x in searchDict:
+		_nameList.append(x)
+	for _name in _nameList:
+		print(str(_nameList.index(_name)) + ': ' + str(_name))
+	print('')
+	return searchDict[_nameList[int(input('Make a wish: '))]]
+
 
 def getLink(targetList, sleepingTime=1): #return list(links,links,...)
 	_cleanLinks = []
-	for url in targetList:
-	    r = requests.get(url)
-	    if r.ok: 
-	        soup = BeautifulSoup(r.text, "html.parser")
-	        for _links in soup.find_all('a',{'class': 'link'}):
-	            if 'Télécharger' in str(_links) and 'Lien 1:' in str(_links):
-	                _cleanLinks.append(_links.get('href'))
-	        print(str(soup.title) + ' -----> Finish')
+#	for url in targetList:
+	r = requests.get(targetList)
+	if r.ok: 
+		soup = BeautifulSoup(r.text, "html.parser")
+		for _links in soup.find_all('a',{'class': 'link'}):
+			_cleanLinks.append(_links.get('href'))
 	time.sleep(sleepingTime)
 	return _cleanLinks
 
-print(search('https://www.wawacity.blue/?search=one&p=mangas'))
+
+print(getLink(choose(search(input('What you wish: ')))))
