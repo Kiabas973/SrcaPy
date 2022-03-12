@@ -2,6 +2,10 @@ from turtle import title
 import requests, time, bs4
 from bs4 import BeautifulSoup #pip install bs4
 
+
+def formatWish(wish): # return str(my+wish+is+you)
+	return wish.replace(' ', '+')
+
 def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...}
 	target = 'https://www.wawacity.blue/?search='+searchName+'&p='+mediaType
 	_searchDict = {}
@@ -39,4 +43,4 @@ def getLink(targetList, sleepingTime=1): #return list(links,links,...)
 	return _cleanLinks
 
 
-print(getLink(choose(search(input('What you wish: ')))))
+print(getLink(choose(search(formatWish(input('What you wish: '))))))
