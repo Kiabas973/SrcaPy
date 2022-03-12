@@ -1,11 +1,21 @@
-from turtle import title
 import requests, time, bs4
+from turtle import title
 from bs4 import BeautifulSoup #pip install bs4
 
-
+"""
+Name: formatWish()
+Input 1: The media name you want : str
+Return : The+media+name+you+want : str
+"""
 def formatWish(wish): # return str(my+wish+is+you)
 	return wish.replace(' ', '+')
 
+"""
+Name: search()
+Input 1: The+media+name+you+want : str
+Input 2: Media type : str (by default is 'mangas' but you can use films, series, mangas or musiques)
+Return : All Media found : dict{Name:Link,...}
+"""
 def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...}
 	target = 'https://www.wawacity.blue/?search='+searchName+'&p='+mediaType
 	_searchDict = {}
@@ -21,6 +31,11 @@ def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...
 			_searchDict[name] = nameLink
 		return _searchDict
 
+"""
+Name: choose()
+Input 1: All Media found : dict{Name:Link,...}
+Return : Media you wish url : str
+"""
 def choose(searchDict): #return str(links)
 	_nameList = []
 	for x in searchDict:
@@ -30,11 +45,14 @@ def choose(searchDict): #return str(links)
 	print('')
 	return searchDict[_nameList[int(input('Make a wish: '))]]
 
-
-def getLink(targetList, sleepingTime=1): #return list(links,links,...)
+"""
+Name: choose()
+Input 1: Media you wish url : str
+Return : Download links of our wish : list
+"""
+def getLink(target, sleepingTime=1): #return list(links,links,...)
 	_cleanLinks = []
-#	for url in targetList:
-	r = requests.get(targetList)
+	r = requests.get(target)
 	if r.ok: 
 		soup = BeautifulSoup(r.text, "html.parser")
 		for _links in soup.find_all('a',{'class': 'link'}):
@@ -43,4 +61,5 @@ def getLink(targetList, sleepingTime=1): #return list(links,links,...)
 	return _cleanLinks
 
 
-print(getLink(choose(search(formatWish(input('What you wish: '))))))
+for x in getLink(choose(search(formatWish(input('What you wish: '))))):
+	print(x)
