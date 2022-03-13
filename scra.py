@@ -26,7 +26,7 @@ def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...
 			for a in links.a:
 				if (type(a) == bs4.element.NavigableString and a != ' '):
 					name = a
-				elif (type(a) == bs4.element.Tag and (' - VF'in a) or (' - VOSTFR'in a)):
+				elif (type(a) == bs4.element.Tag and (' - VF'in a) or (' - VOSTFR'in a) or (' - VF HD'in a) or (' - VOSTFR HD'in a)):
 					name = str(name) + str(a).replace('<i> ', ' ').replace('</i>','')
 			for a in links.find_all('a'):
 				nameLink = 'https://www.wawacity.blue/' + a.get('href')
@@ -63,5 +63,5 @@ def getLink(target, sleepingTime=1): #return list(links,links,...)
 	time.sleep(sleepingTime)
 	return _cleanLinks
 
-for x in getLink(choose(search(formatWish(input('What you wish: '))))):
+for x in getLink(choose(search(formatWish(input('What you wish: ')), input('What type is ? (films, series, mangas or musiques): ')))):
 	print(x)
