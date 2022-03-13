@@ -24,8 +24,10 @@ def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...
 		soup = BeautifulSoup(r.text, "html.parser")
 		for links in soup.find_all('div', {'class': 'wa-sub-block-title'}):
 			for a in links.a:
-				if type(a) == bs4.element.NavigableString and a != ' ':
+				if (type(a) == bs4.element.NavigableString and a != ' '):
 					name = a
+				elif (type(a) == bs4.element.Tag and (' - VF'in a) or (' - VOSTFR'in a)):
+					name = str(name) + str(a).replace('<i> ', ' ').replace('</i>','')
 			for a in links.find_all('a'):
 				nameLink = 'https://www.wawacity.blue/' + a.get('href')
 			_searchDict[name] = nameLink
