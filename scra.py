@@ -1,4 +1,4 @@
-import requests, time, bs4, sys
+import requests, time, bs4, sys, os
 from turtle import title
 from bs4 import BeautifulSoup #pip install bs4
 
@@ -111,15 +111,12 @@ def outputFile(links, fileName = '.htx'):
 	if fileName == '.htx':
 		return links
 	else:
-		with open(fileName, 'w') as f:
+		with open(os.getcwd()+'/'+fileName, 'w') as f:
 		    f.write(str(links))
 		quit()
 
 
-
-
-
 parameter = setup()
-print(parameter[3])
+
 for x in outputFile(getLink(choose(search(formatWish(parameter[0]), parameter[1]))),parameter[3]):
 	print(x)
