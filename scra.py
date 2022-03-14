@@ -67,7 +67,7 @@ Name: SysArg()
 Return : Parameter : list(mediaName, mediaType, targetSite)
 """
 def sysArg():
-	_arg = ['one', 'mangas', '', '.htx']
+	_arg = ['', 'mangas', '', '.htx']
 	for arg in range(len(sys.argv)-1):
 
 		if sys.argv[arg+1] == '-n' or sys.argv[arg+1] == '--name':
