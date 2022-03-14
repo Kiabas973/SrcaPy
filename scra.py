@@ -67,7 +67,7 @@ Name: SysArg()
 Return : Parameter : list(mediaName, mediaType, targetSite)
 """
 def sysArg():
-	_arg = ['one', 'mangas', '']
+	_arg = ['one', 'mangas', '', '.htx']
 	for arg in range(len(sys.argv)-1):
 
 		if sys.argv[arg+1] == '-n' or sys.argv[arg+1] == '--name':
@@ -75,9 +75,9 @@ def sysArg():
 		if sys.argv[arg+1] == '-m' or sys.argv[arg+1] == '--media':
 			_arg[1] = sys.argv[arg+2]
 		if sys.argv[arg+1] == '-s' or sys.argv[arg+1] == '--site':
-			_arg[3] = sys.argv[arg+2]		
+			_arg[2] = sys.argv[arg+2]		
 		if sys.argv[arg+1] == '-o' or sys.argv[arg+1] == '--output':
-			output = sys.argv[arg+2]
+			_arg[3] = sys.argv[arg+2]
 		if sys.argv[arg+1] == '-h' or sys.argv[arg+1] == '--help':
 			print('------------------------------------------------------------------')
 			print('Parameter    | Description                                        ')
@@ -101,7 +101,25 @@ def setup():
 		sysChoose[0] = input('What you wish: ')
 	return sysChoose
 
-parameter = setup()
+"""
+Name: outputFile()
+Input 1: Download links of our wish : list
+Input 2: File name 
+(if not output file) return : Download links of our wish : list
+"""
+def outputFile(links, fileName = '.htx'):
+	if fileName == '.htx':
+		return links
+	else:
+		with open(fileName, 'w') as f:
+		    f.write(str(links))
+		quit()
 
-for x in getLink(choose(search(formatWish(parameter[0]), parameter[1]))):
+
+
+
+
+parameter = setup()
+print(parameter[3])
+for x in outputFile(getLink(choose(search(formatWish(parameter[0]), parameter[1]))),parameter[3]):
 	print(x)
