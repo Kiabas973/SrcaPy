@@ -1,4 +1,4 @@
-import requests, time, bs4
+import requests, time, bs4, sys, os
 from turtle import title
 from bs4 import BeautifulSoup #pip install bs4
 
@@ -24,7 +24,7 @@ def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...
 		soup = BeautifulSoup(r.text, "html.parser")
 		for links in soup.find_all('div', {'class': 'wa-sub-block-title'}):
 			for a in links.a:
-				if (type(a) == bs4.element.NavigableString and a != ' '):
+				if type(a) == bs4.element.NavigableString and a != ' ':
 					name = a
 				elif (type(a) == bs4.element.Tag and (' - VF'in a) or (' - VOSTFR'in a) or (' - VF HD'in a) or (' - VOSTFR HD'in a)):
 					name = str(name) + str(a).replace('<i> ', ' ').replace('</i>','')
@@ -48,11 +48,11 @@ def choose(searchDict): #return str(links)
 	return searchDict[_nameList[int(input('Make a wish: '))]]
 
 """
-Name: choose()
+Name: getLink()
 Input 1: Media you wish url : str
 Return : Download links of our wish : list
 """
-def getLink(target, sleepingTime=1): #return list(links,links,...)
+def getLink(target): #return list(links,links,...)
 	_cleanLinks = []
 	r = requests.get(target)
 	if r.ok: 
@@ -60,8 +60,63 @@ def getLink(target, sleepingTime=1): #return list(links,links,...)
 		for _links in soup.find_all('a',{'class': 'link'}):
 			if 'Télécharger' in str(_links) and 'Lien 1:' in str(_links):
 				_cleanLinks.append(_links.get('href'))
-	time.sleep(sleepingTime)
 	return _cleanLinks
 
-for x in getLink(choose(search(formatWish(input('What you wish: ')), input('What type is ? (films, series, mangas or musiques): ')))):
+"""
+Name: SysArg()
+Return : Parameter : list(mediaName, mediaType, targetSite)
+"""
+def sysArg():
+	_arg = ['one', 'mangas', '', '.htx']
+	for arg in range(len(sys.argv)-1):
+
+		if sys.argv[arg+1] == '-n' or sys.argv[arg+1] == '--name':
+			_arg[0] = sys.argv[arg+2]
+		if sys.argv[arg+1] == '-m' or sys.argv[arg+1] == '--media':
+			_arg[1] = sys.argv[arg+2]
+		if sys.argv[arg+1] == '-s' or sys.argv[arg+1] == '--site':
+			_arg[2] = sys.argv[arg+2]		
+		if sys.argv[arg+1] == '-o' or sys.argv[arg+1] == '--output':
+			_arg[3] = sys.argv[arg+2]
+		if sys.argv[arg+1] == '-h' or sys.argv[arg+1] == '--help':
+			print('------------------------------------------------------------------')
+			print('Parameter    | Description                                        ')
+			print('------------------------------------------------------------------')
+			print('-n --name    | Media name                                         ')
+			print('-m --media   | Media type (films, series, mangas or musiques)     ')
+			print('-s --site    | Target site (wawacity)                             ')
+			print('-o --output  | Output file name                                   ')
+			print('-h --help    | Show this page                                     ')
+			print('------------------------------------------------------------------')
+			quit()
+	return _arg
+
+"""
+Name: setup()
+Return : Full Parameter for all fonction : list(mediaName, mediaType, targetSite)
+"""
+def setup():
+	sysChoose = sysArg()
+	if sysChoose[0] == '':
+		sysChoose[0] = input('What you wish: ')
+	return sysChoose
+
+"""
+Name: outputFile()
+Input 1: Download links of our wish : list
+Input 2: File name 
+(if not output file) return : Download links of our wish : list
+"""
+def outputFile(links, fileName = '.htx'):
+	if fileName == '.htx':
+		return links
+	else:
+		with open(os.getcwd()+'/'+fileName, 'w') as f:
+		    f.write(str(links))
+		quit()
+
+
+parameter = setup()
+
+for x in outputFile(getLink(choose(search(formatWish(parameter[0]), parameter[1]))),parameter[3]):
 	print(x)
