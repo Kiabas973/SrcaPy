@@ -17,7 +17,7 @@ Input 2: Media type : str (by default is 'mangas' but you can use films, series,
 Return : All Media found : dict{Name:Link,...}
 """
 def search(searchName, mediaType='mangas'): #return dict{Name:Link,Name:Link,...}
-	target = 'https://www.wawacity.blue/?search='+searchName+'&p='+mediaType
+	target = 'https://www.wawacity.moe/?search='+searchName+'&p='+mediaType
 	_searchDict = {}
 	r = requests.get(target)
 	if r.ok: 
